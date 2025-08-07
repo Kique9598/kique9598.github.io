@@ -3,7 +3,7 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>KIQUE</title>
+    <title>Kique</title>
     <link rel="icon" type="image/x-icon" href="/assets/LOGO.svg" />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
@@ -112,10 +112,35 @@
         color: #80deea;
         text-decoration: none;
         transition: color 0.2s ease;
+        position: relative;
       }
 
       a:hover {
         color: #b39ddb;
+      }
+
+      .tooltip {
+        position: absolute;
+        bottom: 100%;
+        left: 50%;
+        transform: translateX(-50%);
+        background: #111212;
+        color: white;
+        padding: 8px 12px;
+        border-radius: 6px;
+        border: 1px solid rgba(255, 255, 255, 0.2);
+        font-size: 0.75rem;
+        white-space: nowrap;
+        opacity: 0;
+        visibility: hidden;
+        transition: all 0.3s ease;
+        margin-bottom: 8px;
+        z-index: 10;
+      }
+
+      a:hover .tooltip {
+        opacity: 1;
+        visibility: visible;
       }
 
       @keyframes swim {
@@ -201,7 +226,10 @@
         <p>
           Made with
           <a href="https://youtu.be/tj0zr_xlSKg?si=M4dGEtNouOwa396T"
-            >a dash of love</a
+            >a dash of love<span class="tooltip"
+              >TedTalk presented by my <br />
+              good friend Ever Sick</span
+            ></a
           >
         </p>
       </div>
