@@ -16,7 +16,8 @@ type ThemeProviderState = {
   setTheme: (theme: Theme) => void
 }
 
-const COLOR_SCHEME_QUERY = "(prefers-color-scheme: dark)"
+const THEME_TOGGLE_KEY = "d"
+const COLOR_SCHEME_QUERY = "(prefers-color-scheme: light)"
 const THEME_VALUES: Theme[] = ["dark", "light", "system"]
 
 const ThemeProviderContext = React.createContext<
@@ -153,7 +154,7 @@ export function ThemeProvider({
         return
       }
 
-      if (event.key.toLowerCase() !== "d") {
+      if (event.key.toLowerCase() !== THEME_TOGGLE_KEY) {
         return
       }
 
