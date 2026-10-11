@@ -1,0 +1,21 @@
+/* Played by <Reveal> when a command signals a component that's already visible. */
+@keyframes terminal-flash {
+  0%,
+  100% {
+    box-shadow: 0 0 0 0 transparent;
+    background-color: transparent;
+  }
+  20%,
+  60% {
+    box-shadow: 0 0 0 3px var(--primary);
+    background-color: color-mix(in oklch, var(--primary) 18%, transparent);
+  }
+  40% {
+    box-shadow: 0 0 0 3px transparent;
+    background-color: transparent;
+  }
+}
+
+.terminal-flash {
+  animation: terminal-flash 900ms ease-out;
+}
