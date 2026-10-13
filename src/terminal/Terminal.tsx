@@ -9,26 +9,14 @@ import {
 } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { CircleQuestionMark } from "lucide-react"
+import { BANNER } from "./banner"
+import { programs } from "./programs"
+import type { DataStream, TerminalLine } from "./types"
 
 type TerminalForm = { command: string }
 
-type DataStream = "stdout" | "stderr" | "command"
-
-type TerminalLine = {
-  stream: DataStream
-  line: string
-}
-
 // const Prompt = <ChevronRight className="mt-1 size-4 shrink-0 text-primary" />
 const Prompt = <span className="shrink-0 font-bold text-primary">~$ </span>
-
-const ENRIQUE_ART = [
-  " ___          _               ",
-  "| __|_ _  _ _(_)__ _ _  _ ___ ",
-  "| _|| ' \\| '_| / _` | || / -_)",
-  "|___|_||_|_| |_\\__, |\\_,_\\___|",
-  "                  |_|         ",
-].join("\n")
 
 const Terminal = () => {
   const inputRef = useRef<HTMLInputElement>(null)
@@ -37,10 +25,7 @@ const Terminal = () => {
     defaultValues: { command: "" },
   })
 
-  const [output, setOutput] = useState<TerminalLine[]>([
-    { stream: "stdout", line: ENRIQUE_ART },
-    { stream: "stdout", line: "Welcome to my portfolio terminal :)" },
-  ])
+  const [output, setOutput] = useState<TerminalLine[]>(BANNER)
 
   // Scroll only the terminal's own output box to the bottom (where the input
   // is). scrollIntoView would also scroll the page to bring the terminal into view.
@@ -82,7 +67,15 @@ const Terminal = () => {
   }
 
   const run = (pathname: string, args: string[]) => {
-    print(args.join(" "))
+    // hasOwn so names like "toString" don't match built-in object methods
+    const program = Object.hasOwn(programs, pathname)
+      ? programs[pathname]
+      : undefined
+    if (!program) {
+      print(`command not found: ${pathname}`, "stderr")
+      return
+    }
+    program(args, print)
   }
 
   const onSubmit = ({ command }: TerminalForm) => {

@@ -1,7 +1,7 @@
 import { routes } from "@/config/routes"
 import { useTitle } from "@/hooks/useTitle"
 import { Section } from "@/components/ui/section"
-import Terminal from "@/components/Terminal"
+import Terminal from "@/terminal/Terminal"
 import { Separator } from "@/components/ui/separator"
 import LanguageCard from "@/components/LanguageCard"
 import { ResumeSection } from "@/components/sections/ResumeSection"
