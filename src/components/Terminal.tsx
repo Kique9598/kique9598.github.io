@@ -12,42 +12,46 @@ import { CircleQuestionMark } from "lucide-react"
 
 type TerminalForm = { command: string }
 
+type DataStream = "stdout" | "stderr" | "command"
+
+type TerminalLine = {
+  stream: DataStream
+  line: string
+}
+
+// const Prompt = <ChevronRight className="mt-1 size-4 shrink-0 text-primary" />
+const Prompt = <span className="shrink-0 font-bold text-primary">~$ </span>
+
+const ENRIQUE_ART = [
+  " ___          _               ",
+  "| __|_ _  _ _(_)__ _ _  _ ___ ",
+  "| _|| ' \\| '_| / _` | || / -_)",
+  "|___|_||_|_| |_\\__, |\\_,_\\___|",
+  "                  |_|         ",
+].join("\n")
+
 const Terminal = () => {
   const inputRef = useRef<HTMLInputElement>(null)
+  const outputRef = useRef<HTMLDivElement>(null)
   const { register, handleSubmit, reset } = useForm<TerminalForm>({
     defaultValues: { command: "" },
   })
 
-  // const Prompt = <ChevronRight className="mt-1 size-4 shrink-0 text-primary" />
-  const Prompt = <span className="shrink-0 font-bold text-primary">~$ </span>
-
-  const ENRIQUE_ART = [
-    " ___          _               ",
-    "| __|_ _  _ _(_)__ _ _  _ ___ ",
-    "| _|| ' \\| '_| / _` | || / -_)",
-    "|___|_||_|_| |_\\__, |\\_,_\\___|",
-    "                  |_|         ",
-  ].join("\n")
-
-  type DataStream = "stdout" | "stderr" | "command"
-
-  type TerminalLine = {
-    stream: DataStream
-    line: string
-  }
-
-  const [history, setHistory] = useState<TerminalLine[]>([
+  const [output, setOutput] = useState<TerminalLine[]>([
     { stream: "stdout", line: ENRIQUE_ART },
     { stream: "stdout", line: "Welcome to my portfolio terminal :)" },
   ])
 
-  const scrollToInput = (behavior: ScrollBehavior = "smooth") => {
-    inputRef.current?.scrollIntoView({ block: "nearest", behavior })
+  // Scroll only the terminal's own output box to the bottom (where the input
+  // is). scrollIntoView would also scroll the page to bring the terminal into view.
+  const scrollToBottom = (behavior: ScrollBehavior = "smooth") => {
+    const el = outputRef.current
+    if (el) el.scrollTo({ top: el.scrollHeight, behavior })
   }
 
   useEffect(() => {
-    scrollToInput()
-  }, [history])
+    scrollToBottom()
+  }, [output])
 
   // pull RHF's ref out so we can call it alongside our own
   const { ref: registerRef, ...commandField } = register("command")
@@ -67,14 +71,14 @@ const Terminal = () => {
     )
       return
     e.preventDefault()
-    scrollToInput()
+    scrollToBottom()
     input.focus()
     const end = input.value.length
     input.setSelectionRange(end, end)
   }
 
   const print = (str: string, stream: DataStream = "stdout") => {
-    setHistory((prev) => [...prev, { stream, line: str }])
+    setOutput((prev) => [...prev, { stream, line: str }])
   }
 
   const run = (pathname: string, args: string[]) => {
@@ -110,8 +114,11 @@ const Terminal = () => {
           </Button>
         </CardAction>
       </CardHeader>
-      <CardContent className="flex-1 cursor-text scrollbar-none overflow-y-auto py-3 font-mono text-sm">
-        {history.map((entry, i) => (
+      <CardContent
+        ref={outputRef}
+        className="flex-1 cursor-text scrollbar-none overflow-y-auto py-3 font-mono text-sm"
+      >
+        {output.map((entry, i) => (
           <div key={i} className="flex whitespace-pre">
             {entry.stream === "command" && Prompt}
             <span
