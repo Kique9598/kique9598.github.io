@@ -25,14 +25,14 @@ export const routes = {
     path: "/projects",
     title: "Enrique - Projects",
     name: "Projects",
-    showInNav: true,
+    showInNav: false,
     element: Projects,
   },
   games: {
     path: "/games",
     title: "Enrique - Games",
     name: "Games",
-    showInNav: true,
+    showInNav: false,
     element: Games,
   },
   divvy: {

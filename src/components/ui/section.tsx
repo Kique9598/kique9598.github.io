@@ -8,7 +8,7 @@ const sectionVariants = cva("w-full", {
     variant: {
       header: "sticky top-0 z-50 py-4", // straight from your Header
       section: "py-12",
-      hero: "py-16 md:py-32",
+      hero: "py-6 md:py-8",
       footer: "mt-6 pb-6",
     },
   },
@@ -18,9 +18,9 @@ const sectionVariants = cva("w-full", {
 const contentVariants = cva("mx-auto w-full px-4 sm:px-6 lg:px-8", {
   variants: {
     variant: {
-      header: "flex max-w-7xl items-center justify-center sm:justify-between",
+      header: "flex max-w-6xl items-center justify-center sm:justify-between",
       section: "max-w-5xl", // narrower — text reads better capped tighter
-      hero: "flex max-w-7xl flex-col items-center gap-6 text-center",
+      hero: "flex max-w-5xl flex-col  gap-8",
       footer:
         "pt-3border-t flex max-w-7xl flex-col items-center border-t border-border pt-3",
     },

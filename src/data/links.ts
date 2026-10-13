@@ -13,4 +13,7 @@ export const links = [
     name: "Resume",
     to: resume,
   },
+  {
+    name: "CV",
+  },
 ]

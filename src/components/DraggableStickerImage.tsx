@@ -19,6 +19,26 @@ interface Position {
 }
 
 /**
+ * Easing function for smooth deceleration: starts fast, slows to a stop.
+ * Takes progress from 0 to 1 and returns eased progress from 0 to 1.
+ */
+const easeOutCubic = (t: number): number => {
+  return 1 - Math.pow(1 - t, 3)
+}
+
+/**
+ * Rotate a point around (0, 0) by an angle in radians
+ */
+const rotatePoint = (point: Position, angle: number): Position => {
+  return {
+    x: point.x * Math.cos(angle) - point.y * Math.sin(angle),
+    y: point.x * Math.sin(angle) + point.y * Math.cos(angle),
+  }
+}
+
+const toDegrees = (radians: number): number => radians * (180 / Math.PI)
+
+/**
  * DraggableStickerImage - An interactive image component that follows the cursor when dragged
  * and returns to its origin with a sine wave animation
  */
@@ -60,13 +80,6 @@ const DraggableStickerImage: React.FC<DraggableStickerImageProps> = ({
       setInitialPosition({ x: centerX, y: centerY })
     }
   }, [initialPosition])
-
-  /**
-   * Easing function for smooth deceleration
-   */
-  const easeOutCubic = (t: number): number => {
-    return 1 - Math.pow(1 - t, 3)
-  }
 
   /**
    * Calculate the center position of the image element
@@ -137,56 +150,38 @@ const DraggableStickerImage: React.FC<DraggableStickerImageProps> = ({
     const amplitude = waveAmplitude
     const frequency = Math.max(1, distance / frequencyScaling)
 
+    // Where the sticker was on the previous frame, to work out its heading
+    let previousPos = startPos
+
     /**
      * Main return animation - moves element back to origin with sine wave
      */
     const animate = (currentTime: number) => {
-      const elapsed = currentTime - startTime
-      const progress = Math.min(elapsed / duration, 1)
+      const elapsed = Math.max(currentTime - startTime, 0)
+      const progress = duration > 0 ? Math.min(elapsed / duration, 1) : 1
       const easedProgress = easeOutCubic(progress)
+      const remaining = 1 - easedProgress
 
-      // Calculate position along sine wave path
-      const x = distance * (1 - easedProgress)
-      const y =
-        Math.sin(progress * Math.PI * frequency) *
-        amplitude *
-        (1 - easedProgress)
+      // Build the path as if the way home were a flat axis:
+      // "along" is the distance left to go, "sideways" is the sine wobble,
+      // which shrinks as the sticker gets closer to home
+      const along = distance * remaining
+      const sideways =
+        Math.sin(progress * Math.PI * frequency) * amplitude * remaining
 
-      // Rotate coordinates to align with path back to origin
-      const rotatedX =
-        x * Math.cos(angleFromOrigin) - y * Math.sin(angleFromOrigin)
-      const rotatedY =
-        x * Math.sin(angleFromOrigin) + y * Math.cos(angleFromOrigin)
+      // Tilt that flat path so it points along the real line back to origin
+      const newPos = rotatePoint({ x: along, y: sideways }, angleFromOrigin)
+      setPosition(newPos)
 
-      setPosition({ x: rotatedX, y: rotatedY })
-
-      // Calculate velocity for rotation direction
-      const dx_dt = -distance * 3 * Math.pow(1 - progress, 2)
-      const dy_dt =
-        Math.cos(progress * Math.PI * frequency) *
-          Math.PI *
-          frequency *
-          amplitude *
-          (1 - easedProgress) -
-        Math.sin(progress * Math.PI * frequency) *
-          amplitude *
-          3 *
-          Math.pow(1 - progress, 2)
-
-      // Rotate velocity vector
-      const vel_x =
-        dx_dt * Math.cos(angleFromOrigin) - dy_dt * Math.sin(angleFromOrigin)
-      const vel_y =
-        dx_dt * Math.sin(angleFromOrigin) + dy_dt * Math.cos(angleFromOrigin)
-
-      // Calculate rotation angle from velocity
-      let movementAngle = Math.atan2(vel_y, vel_x) * (180 / Math.PI)
-      if (!isFinite(movementAngle)) {
-        movementAngle = currentRotationRef.current
+      // Face the direction of travel: the angle of the step from last frame
+      // to this one. If the sticker didn't move, keep the previous angle.
+      const stepX = newPos.x - previousPos.x
+      const stepY = newPos.y - previousPos.y
+      if (stepX !== 0 || stepY !== 0) {
+        currentRotationRef.current = toDegrees(Math.atan2(stepY, stepX))
       }
-
-      currentRotationRef.current = movementAngle
-      setRotation(movementAngle)
+      setRotation(currentRotationRef.current)
+      previousPos = newPos
 
       // Animate scale back to normal
       setScale(startScale + (1 - startScale) * easedProgress)
