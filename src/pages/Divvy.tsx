@@ -44,34 +44,6 @@ export default function Home() {
           />
         </SectionAside>
       </Section>
-      <Section>
-        <SectionMain>
-          <div className="item-center flex flex-row gap-16">
-            <div className="flex flex-1 flex-col gap-4">
-              <h2>Why One Screen</h2>
-              <p>
-                Most bill-splitting apps walk you through three screens: enter
-                the items, assign the people, then check the totals. Catch a
-                mistake at the end and you're paging back and forth to fix it.
-              </p>
-              <p>
-                Divvy keeps the whole split on one receipt. Items, people and
-                running totals stay in view, so every tap shows its effect right
-                away.
-              </p>
-              <p>
-                I had the idea years before I could code. The original version
-                split the check inside the restaurant's own point-of-sale
-                system, right where the bill is created. Divvy is the first step
-                toward that.
-              </p>
-            </div>
-            <div className="flex-1 gap-6 rounded-4xl border border-border bg-card p-9">
-              card
-            </div>
-          </div>
-        </SectionMain>
-      </Section>
     </>
   )
 }
