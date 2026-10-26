@@ -36,7 +36,7 @@ const SocialLinks = ({ enableScrollTransition = false }: SocialLinksProps) => {
             "curvy_underline px-2 py-1 text-sm text-muted-foreground transition-slow hover:text-foreground"
           )}
           style={{
-            transform: hide ? "translateY(-100%)" : "translateY(0)",
+            transform: hide ? "translateY(-200%)" : "translateY(0)",
             opacity: hide ? 0 : 1,
           }}
         >
