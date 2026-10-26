@@ -1,6 +1,5 @@
 import { BrowserRouter, Routes, Route } from "react-router-dom"
 import { routes } from "./config/routes.tsx"
-import NotFound from "./pages/NotFound.tsx"
 import { Layout } from "./components/Layout.tsx"
 
 export function App() {
