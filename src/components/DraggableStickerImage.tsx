@@ -1,4 +1,4 @@
-import React, { useState, useRef, useEffect, type MouseEvent } from "react"
+import React, { useState, useRef, useEffect, type PointerEvent } from "react"
 
 interface DraggableStickerImageProps {
   src: string
@@ -94,9 +94,9 @@ const DraggableStickerImage: React.FC<DraggableStickerImageProps> = ({
   }
 
   /**
-   * Handle mouse down - start dragging
+   * Handle pointer down (mouse, finger or pen) - start dragging
    */
-  const handleMouseDown = (e: MouseEvent<HTMLImageElement>) => {
+  const handlePointerDown = (e: PointerEvent<HTMLImageElement>) => {
     e.preventDefault()
     setIsDragging(true)
     setScale(dragScale)
@@ -118,9 +118,9 @@ const DraggableStickerImage: React.FC<DraggableStickerImageProps> = ({
   }
 
   /**
-   * Handle mouse move - follow cursor while dragging
+   * Handle pointer move - follow cursor or finger while dragging
    */
-  const handleMouseMove = (e: globalThis.MouseEvent) => {
+  const handlePointerMove = (e: globalThis.PointerEvent) => {
     if (!isDragging) return
 
     const deltaX = e.clientX - initialPosition.x
@@ -129,9 +129,9 @@ const DraggableStickerImage: React.FC<DraggableStickerImageProps> = ({
   }
 
   /**
-   * Handle mouse up - release and animate return to origin
+   * Handle pointer up - release and animate return to origin
    */
-  const handleMouseUp = () => {
+  const handlePointerUp = () => {
     setIsDragging(false)
 
     // Capture current state for animation
@@ -228,17 +228,21 @@ const DraggableStickerImage: React.FC<DraggableStickerImageProps> = ({
   }
 
   /**
-   * Attach mouse event listeners when dragging
+   * Attach pointer event listeners when dragging.
+   * pointercancel fires when the phone takes the touch away (e.g. a system
+   * gesture), so treat it like letting go
    */
   useEffect(() => {
     if (isDragging) {
-      window.addEventListener("mousemove", handleMouseMove)
-      window.addEventListener("mouseup", handleMouseUp)
+      window.addEventListener("pointermove", handlePointerMove)
+      window.addEventListener("pointerup", handlePointerUp)
+      window.addEventListener("pointercancel", handlePointerUp)
     }
 
     return () => {
-      window.removeEventListener("mousemove", handleMouseMove)
-      window.removeEventListener("mouseup", handleMouseUp)
+      window.removeEventListener("pointermove", handlePointerMove)
+      window.removeEventListener("pointerup", handlePointerUp)
+      window.removeEventListener("pointercancel", handlePointerUp)
     }
   }, [isDragging, initialPosition, position, scale])
 
@@ -265,8 +269,12 @@ const DraggableStickerImage: React.FC<DraggableStickerImageProps> = ({
         zIndex: isDragging ? 1000 : 1,
         userSelect: "none",
         WebkitUserSelect: "none",
+        // A drag that starts on the sticker moves it instead of scrolling
+        touchAction: "none",
+        // iOS: no "save image" menu on long press
+        WebkitTouchCallout: "none",
       }}
-      onMouseDown={handleMouseDown}
+      onPointerDown={handlePointerDown}
       draggable={false}
     />
   )

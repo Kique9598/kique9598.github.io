@@ -4,7 +4,21 @@
 @import "@fontsource-variable/inter";
 
 @custom-variant dark (&:is(.dark *));
-/* @custom-variant hover (&:hover); */
+/*
+ * Make every hover: style also apply while something is pressed.
+ * Tailwind normally limits hover: to devices with a real mouse, so on a
+ * phone cards would never react. :active covers a finger held down.
+ */
+@custom-variant hover {
+  @media (hover: hover) {
+    &:hover {
+      @slot;
+    }
+  }
+  &:active {
+    @slot;
+  }
+}
 
 @theme inline {
   --font-heading: var(--font-sans);
