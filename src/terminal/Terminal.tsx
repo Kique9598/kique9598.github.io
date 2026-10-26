@@ -11,7 +11,8 @@ import { Button } from "@/components/ui/button"
 import { CircleQuestionMark } from "lucide-react"
 import { BANNER } from "./banner"
 import { programs } from "./programs"
-import type { DataStream, TerminalLine } from "./types"
+import type { Context, DataStream, TerminalLine } from "./types"
+import { cn } from "cn"
 
 type TerminalForm = { command: string }
 
@@ -21,11 +22,13 @@ const Prompt = <span className="shrink-0 font-bold text-primary">~$ </span>
 const Terminal = () => {
   const inputRef = useRef<HTMLInputElement>(null)
   const outputRef = useRef<HTMLDivElement>(null)
-  const { register, handleSubmit, reset } = useForm<TerminalForm>({
+  const { register, handleSubmit, reset, setValue } = useForm<TerminalForm>({
     defaultValues: { command: "" },
   })
 
+  const [cursor, setCursor] = useState<number | null>(null)
   const [output, setOutput] = useState<TerminalLine[]>(BANNER)
+  const [history, setHistory] = useState<string[]>([])
 
   // Scroll only the terminal's own output box to the bottom (where the input
   // is). scrollIntoView would also scroll the page to bring the terminal into view.
@@ -62,8 +65,13 @@ const Terminal = () => {
     input.setSelectionRange(end, end)
   }
 
-  const print = (str: string, stream: DataStream = "stdout") => {
-    setOutput((prev) => [...prev, { stream, line: str }])
+  const ctx: Context = {
+    history,
+    print: (str: string, stream: DataStream = "stdout") => {
+      setOutput((prev) => [...prev, { stream, line: str }])
+    },
+    clear: () => setOutput([]),
+    banner: () => setOutput(BANNER),
   }
 
   const run = (pathname: string, args: string[]) => {
@@ -72,26 +80,68 @@ const Terminal = () => {
       ? programs[pathname]
       : undefined
     if (!program) {
-      print(`command not found: ${pathname}`, "stderr")
+      ctx.print(`command not found: ${pathname}`, "stderr")
       return
     }
-    program(args, print)
+    program.run(args, ctx)
   }
 
-  const onSubmit = ({ command }: TerminalForm) => {
-    const trimmed = command.trim()
+  const execute = (line: string) => {
+    const trimmed = line.trim()
 
     if (!trimmed) {
-      print("", "command")
+      ctx.print("", "command")
       reset()
       return
     }
 
+    if (history.at(history.length - 1) !== trimmed)
+      setHistory((prev) => [...prev, trimmed])
+
     const args = trimmed.split(/\s+/)
 
-    print(trimmed, "command")
+    ctx.print(trimmed, "command")
     run(args[0], args)
     reset()
+  }
+
+  const onSubmit = ({ command }: TerminalForm) => execute(command)
+  const handleHelpBtn = () => execute("help")
+
+  const onKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (e.key === "ArrowUp") {
+      e.preventDefault()
+      if (history.length === 0) return
+      const next =
+        cursor === null ? history.length - 1 : Math.max(0, cursor - 1)
+      setCursor(next)
+      setValue("command", history[next])
+    }
+
+    if (e.key === "ArrowDown") {
+      e.preventDefault()
+      if (cursor === null) return
+      if (cursor >= history.length - 1) {
+        setCursor(null)
+        setValue("command", "")
+      } else {
+        setCursor(cursor + 1)
+        setValue("command", history[cursor + 1])
+      }
+    }
+
+    if (e.key === "Tab") {
+      e.preventDefault()
+      const value = e.currentTarget.value
+      if (!value || value.includes(" ")) return
+
+      const matching = Object.keys(programs).filter((name) =>
+        name.startsWith(value)
+      )
+      if (matching.length === 1) {
+        setValue("command", `${matching[0]} `)
+      }
+    }
   }
 
   return (
@@ -100,9 +150,14 @@ const Terminal = () => {
       onMouseDown={focusInput}
     >
       <CardHeader className="flex items-center justify-between bg-muted py-1 text-muted-foreground">
-        <CardDescription>enrique/portfolio</CardDescription>
+        <CardDescription>enrique@portfolio</CardDescription>
         <CardAction>
-          <Button size="icon" aria-label="Help" variant="ghost">
+          <Button
+            size="icon"
+            aria-label="Help"
+            variant="ghost"
+            onClick={handleHelpBtn}
+          >
             <CircleQuestionMark />
           </Button>
         </CardAction>
@@ -112,12 +167,13 @@ const Terminal = () => {
         className="flex-1 cursor-text scrollbar-none overflow-y-auto py-3 font-mono text-sm"
       >
         {output.map((entry, i) => (
-          <div key={i} className="flex whitespace-pre">
+          <div key={i} className="flex whitespace-pre-wrap">
             {entry.stream === "command" && Prompt}
             <span
-              className={
-                entry.stream === "stderr" ? "text-destructive" : undefined
-              }
+              className={cn(
+                "wrap-anywhere",
+                entry.stream === "stderr" && "text-destructive"
+              )}
             >
               {entry.line}
             </span>
@@ -128,6 +184,7 @@ const Terminal = () => {
           {Prompt}
           <input
             ref={setInputRef}
+            onKeyDown={onKeyDown}
             autoComplete="off"
             autoCorrect="off"
             autoCapitalize="off"

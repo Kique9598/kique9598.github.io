@@ -5,11 +5,14 @@ export type TerminalLine = {
   line: string
 }
 
-/** What a program uses to write to the terminal. Defaults to stdout. */
-export type Print = (line: string, stream?: DataStream) => void
+export type Context = {
+  print: (line: string, stream?: DataStream) => void
+  clear: () => void
+  history: string[]
+  banner: () => void
+}
 
-/**
- * A program is like a tiny executable: it gets its argv (args[0] is its own
- * name) and a way to print, does its thing, and returns.
- */
-export type Program = (args: string[], print: Print) => void
+export type Program = {
+  description?: string
+  run: (args: string[], ctx: Context) => void
+}

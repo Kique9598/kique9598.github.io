@@ -1,7 +1,11 @@
-import { Section } from "../ui/section"
+import { Section, SectionMain } from "../ui/section"
 
 const Hero = () => {
-  return <Section variant="hero">Hero</Section>
+  return (
+    <Section variant="hero">
+      <SectionMain>Hero</SectionMain>
+    </Section>
+  )
 }
 
 export default Hero

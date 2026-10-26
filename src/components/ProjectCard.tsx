@@ -32,7 +32,7 @@ export function ProjectCard({
       className={cn(
         "group block overflow-hidden rounded-3xl border border-border bg-primary/10",
         "transition duration-300 ease-out motion-safe:hover:-translate-y-1.5",
-        "hover:border-foreground/15 hover:shadow-[0_24px_48px_-24px_rgb(0_0_0/0.25)]",
+        "hover:border-foreground/15 hover:shadow-md",
         "focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-foreground",
         featured ? "p-8 md:p-12" : "p-7",
         className

@@ -3,7 +3,7 @@
 import { useState } from "react"
 import { Button } from "@/components/ui/button"
 import { Separator } from "@/components/ui/separator"
-import { Section } from "@/components/ui/section"
+import { Section, SectionMain } from "@/components/ui/section"
 import narrative from "@/assets/documents/Johnston Narrative.pdf"
 import { buttonVariants } from "@/components/ui/button"
 import { cn } from "cn"
@@ -57,68 +57,70 @@ export function ResumeSection() {
   const [tab, setTab] = useState<Tab>("experience")
 
   return (
-    <Section contentClassName="flex flex-col gap-8 md:flex-row md:gap-16">
-      <div className="flex flex-col gap-4">
-        <h2>Resume</h2>
-        <div
-          role="tablist"
-          aria-label="Resume sections"
-          className="flex gap-1 md:w-44 md:flex-col"
-        >
-          {TABS.map(({ id, label }) => (
-            <Button
-              key={id}
-              role="tab"
-              aria-selected={tab === id}
-              size="lg"
-              variant={tab === id ? "default" : "ghost"}
-              className="justify-start"
-              onClick={() => setTab(id)}
-            >
-              {label}
-            </Button>
-          ))}
-        </div>
-      </div>
-
-      {/* key={tab} remounts this list on each switch, so the enter animation replays */}
-      <div key={tab} role="tabpanel" className="flex flex-1 flex-col">
-        {CONTENT[tab].map((entry, i) => (
+    <Section>
+      <SectionMain className="flex flex-col gap-8 md:flex-row md:gap-16">
+        <div className="flex flex-col gap-4">
+          <h2>Resume</h2>
           <div
-            key={entry.title}
-            className="animate-in duration-500 fill-mode-both fade-in slide-in-from-left-2"
-            style={{ animationDelay: `${i * 80}ms` }}
+            role="tablist"
+            aria-label="Resume sections"
+            className="flex gap-1 md:w-44 md:flex-col"
           >
-            <Separator />
-            <div className="flex flex-col gap-2 py-7">
-              <div className="flex flex-wrap items-baseline justify-between gap-2">
-                <h5>{entry.title}</h5>
-                {entry.date && (
-                  <span className="text-sm text-muted-foreground">
-                    {entry.date}
-                  </span>
+            {TABS.map(({ id, label }) => (
+              <Button
+                key={id}
+                role="tab"
+                aria-selected={tab === id}
+                size="lg"
+                variant={tab === id ? "default" : "ghost"}
+                className="justify-start"
+                onClick={() => setTab(id)}
+              >
+                {label}
+              </Button>
+            ))}
+          </div>
+        </div>
+
+        {/* key={tab} remounts this list on each switch, so the enter animation replays */}
+        <div key={tab} role="tabpanel" className="flex flex-1 flex-col">
+          {CONTENT[tab].map((entry, i) => (
+            <div
+              key={entry.title}
+              className="animate-in duration-500 fill-mode-both fade-in slide-in-from-left-2"
+              style={{ animationDelay: `${i * 80}ms` }}
+            >
+              <Separator />
+              <div className="flex flex-col gap-2 py-7">
+                <div className="flex flex-wrap items-baseline justify-between gap-2">
+                  <h5>{entry.title}</h5>
+                  {entry.date && (
+                    <span className="text-sm text-muted-foreground">
+                      {entry.date}
+                    </span>
+                  )}
+                </div>
+                {entry.subtitle && (
+                  <p className="font-medium">{entry.subtitle}</p>
+                )}
+                <p>{entry.body}</p>
+                {entry.link && (
+                  <a
+                    href={entry.link.href}
+                    target="_blank"
+                    className={cn(
+                      buttonVariants({ variant: "link", size: "lg" }),
+                      "text-default w-fit text-left"
+                    )}
+                  >
+                    {entry.link.label}
+                  </a>
                 )}
               </div>
-              {entry.subtitle && (
-                <p className="font-medium">{entry.subtitle}</p>
-              )}
-              <p>{entry.body}</p>
-              {entry.link && (
-                <a
-                  href={entry.link.href}
-                  target="_blank"
-                  className={cn(
-                    buttonVariants({ variant: "link", size: "lg" }),
-                    "text-default w-fit text-left"
-                  )}
-                >
-                  {entry.link.label}
-                </a>
-              )}
             </div>
-          </div>
-        ))}
-      </div>
+          ))}
+        </div>
+      </SectionMain>
     </Section>
   )
 }
