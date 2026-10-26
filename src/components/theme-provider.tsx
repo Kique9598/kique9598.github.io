@@ -34,10 +34,10 @@ function isTheme(value: string | null): value is Theme {
 
 function getSystemTheme(): ResolvedTheme {
   if (window.matchMedia(COLOR_SCHEME_QUERY).matches) {
-    return "dark"
+    return "light"
   }
 
-  return "light"
+  return "dark"
 }
 
 function disableTransitionsTemporarily() {
