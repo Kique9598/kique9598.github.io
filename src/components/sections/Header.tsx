@@ -5,10 +5,12 @@ import { Section, SectionMain } from "../ui/section"
 
 export default function Header() {
   return (
-    <Section variant="header">
+    <Section variant="header" className="pointer-events-none">
       <SectionMain>
-        <NavBar />
-        <div className="hidden sm:block">
+        <div className="pointer-events-auto">
+          <NavBar />
+        </div>
+        <div className="pointer-events-auto hidden sm:block">
           <SocialLinks enableScrollTransition />
         </div>
       </SectionMain>

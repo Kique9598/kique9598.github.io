@@ -1,10 +1,11 @@
-import { Button } from "@/components/ui/button"
+import { buttonVariants } from "@/components/ui/button"
 import { Section, SectionAside, SectionMain } from "@/components/ui/section"
 import { routes } from "@/config/routes"
 import { useTitle } from "@/hooks/useTitle"
 import { ArrowDown } from "lucide-react"
 import divvyMockup from "@/assets/images/front_facing_divvy_mockup.png"
 import { cn } from "cn"
+import { SplitDemo } from "@/components/divvy/SplitDemo"
 
 export default function Home() {
   useTitle(routes.divvy.title)
@@ -27,9 +28,12 @@ export default function Home() {
             was there, add what you ordered, then tap names onto items.
             Everyone's share, tax and tip included, updates as you go.
           </p>
-          <Button className="w-fit" size={"lg"}>
+          <a
+            href="#demo"
+            className={cn(buttonVariants({ size: "lg" }), "w-fit")}
+          >
             Try the live demo <ArrowDown aria-hidden="true" />
-          </Button>
+          </a>
         </SectionMain>
         <SectionAside>
           <img
@@ -43,6 +47,19 @@ export default function Home() {
             )}
           />
         </SectionAside>
+      </Section>
+      <Section id="demo">
+        <SectionMain>
+          <h2>Try It</h2>
+          <p>
+            This is the same split logic the app uses. Pick a person, then tap
+            items to add or remove them. Watch tax and tip shift to follow what
+            each person ordered.
+          </p>
+          <div className="mt-6">
+            <SplitDemo />
+          </div>
+        </SectionMain>
       </Section>
     </>
   )

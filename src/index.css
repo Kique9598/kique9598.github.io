@@ -61,6 +61,25 @@
   --radius-2xl: calc(var(--radius) * 1.8);
   --radius-3xl: calc(var(--radius) * 2.2);
   --radius-4xl: calc(var(--radius) * 2.6);
+  /* status */
+  --color-success: var(--success);
+  --color-success-foreground: var(--success-foreground);
+  --color-warning: var(--warning);
+  --color-warning-foreground: var(--warning-foreground);
+  --color-warning-accent: var(--warning-accent);
+  --color-warning-border: var(--warning-border);
+  /* Divvy: inverted summary surface */
+  --color-summary: var(--summary);
+  --color-summary-foreground: var(--summary-foreground);
+  --color-summary-muted-foreground: var(--summary-muted-foreground);
+  --color-summary-border: var(--summary-border);
+  --color-notice: var(--notice);
+  --color-notice-foreground: var(--notice-foreground);
+  /* Divvy: the current person, set by [data-person] (see divvy.css) */
+  --color-person: var(--person);
+  --color-person-soft: var(--person-soft);
+  --color-person-ink: var(--person-ink);
+  --color-person-foreground: var(--person-foreground);
 }
 
 :root {
@@ -98,6 +117,30 @@
   --sidebar-accent-foreground: oklch(0.218 0.008 223.9);
   --sidebar-border: oklch(0.925 0.005 214.3);
   --sidebar-ring: oklch(0.723 0.014 214.4);
+  /* status */
+  --success: #e2eed9;
+  --success-foreground: #2f4a22;
+  --warning: #fdf7e6;
+  --warning-foreground: #6b5520;
+  --warning-accent: #f1e4bf;
+  --warning-border: #ead9a6;
+  /* Divvy brand: one solid / soft / ink trio per person */
+  --divvy-sarah: #d6a1b1;
+  --divvy-sarah-soft: #f3dfe5;
+  --divvy-sarah-ink: #5c2638;
+  --divvy-alex: #959cc9;
+  --divvy-alex-soft: #e2e4f3;
+  --divvy-alex-ink: #2b3268;
+  --divvy-josh: #93b380;
+  --divvy-josh-soft: #e2eed9;
+  --divvy-josh-ink: #2f4a22;
+  --person-foreground: oklch(1 0 0);
+  --summary: #222120;
+  --summary-foreground: oklch(1 0 0);
+  --summary-muted-foreground: oklch(1 0 0 / 60%);
+  --summary-border: oklch(1 0 0 / 12%);
+  --notice: #3b3427;
+  --notice-foreground: #f3e3b5;
 }
 
 .dark {
@@ -133,6 +176,45 @@
   --sidebar-accent-foreground: oklch(0.987 0.002 197.1);
   --sidebar-border: oklch(1 0 0 / 10%);
   --sidebar-ring: oklch(0.56 0.021 213.5);
+  /* status */
+  --success: #283322;
+  --success-foreground: #cfe3c2;
+  --warning: #2a2618;
+  --warning-foreground: #f1e4bf;
+  --warning-accent: #463b1d;
+  --warning-border: #5a4c25;
+  /* Divvy brand */
+  --divvy-sarah: #c48a9c;
+  --divvy-sarah-soft: #3a2a30;
+  --divvy-sarah-ink: #f3dfe5;
+  --divvy-alex: #8a91c2;
+  --divvy-alex-soft: #2a2c40;
+  --divvy-alex-ink: #e2e4f3;
+  --divvy-josh: #86a873;
+  --divvy-josh-soft: #283322;
+  --divvy-josh-ink: #e2eed9;
+  --summary: oklch(0.275 0.011 216.9);
+  --notice: #4a4130;
+}
+
+@theme {
+  /* press halo: a thin ring that swells outward as it fades */
+  --animate-press-halo: press-halo 900ms cubic-bezier(0.22, 1, 0.36, 1) forwards;
+
+  @keyframes press-halo {
+    0% {
+      box-shadow: 0 0 0 0 color-mix(in oklab, var(--foreground) 16%, transparent);
+    }
+    12% {
+      box-shadow: 0 0 0 2px color-mix(in oklab, var(--foreground) 16%, transparent);
+    }
+    40% {
+      box-shadow: 0 0 0 6px color-mix(in oklab, var(--foreground) 9%, transparent);
+    }
+    100% {
+      box-shadow: 0 0 0 8px transparent;
+    }
+  }
 }
 
 @layer base {
