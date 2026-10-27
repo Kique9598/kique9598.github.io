@@ -6,7 +6,7 @@ const Footer = () => {
     <Section variant="footer">
       <SectionMain>
         <SocialLinks />
-        <span className="text-textPrimary px-2 py-1 text-sm">
+        <span className="type-body-sm px-2 py-1">
           Made with a{" "}
           <a
             href="https://youtu.be/tj0zr_xlSKg?si=8tXSXfys3dgAUGEu"

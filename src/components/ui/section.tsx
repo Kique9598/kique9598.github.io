@@ -2,6 +2,7 @@
 //
 // <Section>      the outer band: vertical padding + the page-width container
 // <SectionMain>  REQUIRED. The section's content and its per-variant layout
+// <SectionHeader> optional. Title (h1 or h2) + sub-header, inside SectionMain.
 // <SectionAside> optional. When present, the container becomes two columns
 //                at md+ (main left, aside right), shadcn-style: the container
 //                reacts to the aside's data-slot via CSS `has-[]`, no JS.
@@ -137,6 +138,41 @@ export function SectionMain({
       className={cn(mainVariants({ variant }), className)}
       {...props}
     />
+  )
+}
+
+export interface SectionHeaderProps
+  extends Omit<React.ComponentProps<"div">, "title"> {
+  title: React.ReactNode
+  /** Line under the title, styled as type-subheading. */
+  subtitle?: React.ReactNode
+  /** Small all-caps label above the title. */
+  eyebrow?: React.ReactNode
+  /**
+   * Heading level. Use h1 once per page (the hero), h2 for every section
+   * after it. Size follows the tag, so the outline and the look stay in sync.
+   */
+  as?: "h1" | "h2"
+}
+
+export function SectionHeader({
+  title,
+  subtitle,
+  eyebrow,
+  as: Heading = "h1",
+  className,
+  ...props
+}: SectionHeaderProps) {
+  return (
+    <div
+      data-slot="section-header"
+      className={cn("flex flex-col gap-3", className)}
+      {...props}
+    >
+      {eyebrow && <span className="type-eyebrow">{eyebrow}</span>}
+      <Heading>{title}</Heading>
+      {subtitle && <p className="type-subheading">{subtitle}</p>}
+    </div>
   )
 }
 

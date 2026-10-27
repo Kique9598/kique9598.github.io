@@ -1,6 +1,10 @@
 import { routes } from "@/config/routes"
 import { useTitle } from "@/hooks/useTitle"
-import { Section, SectionMain } from "@/components/ui/section"
+import {
+  Section,
+  SectionHeader,
+  SectionMain,
+} from "@/components/ui/section"
 import Terminal from "@/terminal/Terminal"
 import { Separator } from "@/components/ui/separator"
 import LanguageCard from "@/components/LanguageCard"
@@ -14,14 +18,10 @@ export default function Home() {
     <>
       <Section variant="hero">
         <SectionMain>
-          <div>
-            <h1 className="text-5xl font-bold tracking-tight">
-              Enrique Alverde
-            </h1>
-            <p className="mt-3 text-2xl text-muted-foreground">
-              Software Engineer in San Diego, CA
-            </p>
-          </div>
+          <SectionHeader
+            title="Enrique Alverde"
+            subtitle="Software Engineer in San Diego, CA"
+          />
           <Separator />
           <div className="flex flex-row gap-16">
             <div className="flex flex-1">

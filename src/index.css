@@ -235,21 +235,87 @@
   html::-webkit-scrollbar {
     display: none;
   }
+  /*
+   * Typography: plain tags are styled by default, so <h2> or <p> with no
+   * classes already looks right. Reach for a type-* utility (below) only
+   * when an element needs a different role than its tag gives it.
+   */
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6 {
+    @apply font-heading tracking-tight text-balance;
+  }
   h1 {
-    @apply text-4xl font-bold;
+    @apply text-4xl font-bold md:text-5xl;
   }
   h2 {
-    @apply text-3xl font-semibold;
+    @apply text-3xl font-semibold md:text-4xl;
   }
   h3 {
-    @apply text-xl text-muted-foreground;
+    @apply text-2xl font-semibold;
   }
+  /* h4 is the card header */
   h4 {
     @apply text-xl font-semibold;
   }
   h5 {
     @apply text-lg font-semibold;
   }
+  h6 {
+    @apply text-base font-semibold;
+  }
+  /* Same as type-body, written as plain line-height so a size class like
+     text-xs on a <p> still gets its own matching leading. */
+  p {
+    @apply text-base;
+    line-height: var(--leading-relaxed);
+  }
+}
+
+/*
+ * Text roles. Named type-* (not text-*) so tailwind-merge never mistakes one
+ * for a color or size class and drops it when combined in cn().
+ * Color is part of the role where it matters (muted ones); override with a
+ * text-* color class when a surface needs something else.
+ */
+
+/* Sub-header under a section's h1/h2 (see <SectionHeader>) */
+@utility type-subheading {
+  @apply text-xl text-muted-foreground md:text-2xl;
+}
+
+/* Hero / intro paragraph: the first thing read under a page title */
+@utility type-lead {
+  @apply text-lg leading-relaxed md:text-xl;
+}
+
+/* Paragraph sizes. type-body is the default every <p> already gets. */
+@utility type-body-lg {
+  @apply text-lg leading-relaxed;
+}
+@utility type-body {
+  @apply text-base leading-relaxed;
+}
+@utility type-body-sm {
+  @apply text-sm leading-relaxed;
+}
+
+/* Body copy inside a card: own role so cards can drift from page text */
+@utility type-card {
+  @apply text-base leading-relaxed text-muted-foreground;
+}
+
+/* Small, light supporting text: dates, metadata, image captions */
+@utility type-caption {
+  @apply text-sm font-light text-muted-foreground;
+}
+
+/* Small all-caps label that sits above a heading */
+@utility type-eyebrow {
+  @apply text-xs font-semibold tracking-widest text-muted-foreground uppercase;
 }
 
 @utility transition-base {

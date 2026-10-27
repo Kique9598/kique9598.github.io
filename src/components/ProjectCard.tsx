@@ -46,25 +46,23 @@ export function ProjectCard({
       >
         <div className="flex flex-1 flex-col gap-3">
           <h3
-            className={cn(
-              "font-bold tracking-tight",
-              featured ? "text-4xl md:text-5xl" : "text-2xl"
-            )}
+            className={cn("font-bold", featured && "text-4xl md:text-5xl")}
           >
             {title}
           </h3>
 
           <p
             className={cn(
-              "leading-relaxed text-muted-foreground",
-              featured ? "max-w-md text-lg" : "text-base"
+              featured
+                ? "max-w-md type-body-lg text-muted-foreground"
+                : "type-card"
             )}
           >
             {description}
           </p>
 
           {(meta || tech?.length) && (
-            <p className="text-sm text-muted-foreground">
+            <p className="type-caption">
               {[meta, tech?.join(", ")].filter(Boolean).join(" · ")}
             </p>
           )}

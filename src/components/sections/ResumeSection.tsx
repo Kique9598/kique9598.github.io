@@ -3,7 +3,11 @@
 import { useState } from "react"
 import { Button } from "@/components/ui/button"
 import { Separator } from "@/components/ui/separator"
-import { Section, SectionMain } from "@/components/ui/section"
+import {
+  Section,
+  SectionHeader,
+  SectionMain,
+} from "@/components/ui/section"
 import narrative from "@/assets/documents/Johnston Narrative.pdf"
 import { buttonVariants } from "@/components/ui/button"
 import { cn } from "cn"
@@ -60,7 +64,7 @@ export function ResumeSection() {
     <Section>
       <SectionMain className="flex flex-col gap-8 md:flex-row md:gap-16">
         <div className="flex flex-col gap-4">
-          <h2>Resume</h2>
+          <SectionHeader as="h2" title="Resume" />
           <div
             role="tablist"
             aria-label="Resume sections"
@@ -95,7 +99,7 @@ export function ResumeSection() {
                 <div className="flex flex-wrap items-baseline justify-between gap-2">
                   <h5>{entry.title}</h5>
                   {entry.date && (
-                    <span className="text-sm text-muted-foreground">
+                    <span className="type-caption">
                       {entry.date}
                     </span>
                   )}
